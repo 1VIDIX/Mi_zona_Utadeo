@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Mi zona U Tadeo</string>
+    <string name="bienvenida">BIENVENIDO A \n    MI ZONA</string>
+    <string name="init_sesión">Iniciar sesión</string>
+    <string name="registro1">¿No tienes una cuenta?</string>
+    <string name="registro2">Regístrate</string>
+    <string name="email">Email</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="escribe">Escribe aquí...</string>
+    <string name="olvidar">Restablecer contraseña</string>
+    <string name="nombre">Nombre</string>
+    <string name="contraseña_check">Verifica tu contraseña</string>
+    <string name="show_password">Mostrar contraseña</string>
+
+</resources>
