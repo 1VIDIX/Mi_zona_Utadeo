@@ -101,6 +101,7 @@
             android:background="@drawable/edittext_rounded"
             android:elevation="8dp"
             android:hint="@string/escribe"
+            android:inputType="textEmailAddress"
             android:padding="12dp"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -117,12 +118,12 @@
             android:fontFamily="@font/baloo"
             android:text="@string/contraseña"
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="@+id/contraseña_user"
+            app:layout_constraintStart_toStartOf="@+id/contra_user"
             app:layout_constraintTop_toBottomOf="@+id/Email" />
 
 
         <EditText
-            android:id="@+id/contraseña_user"
+            android:id="@+id/contra_user"
             android:layout_width="300dp"
             android:layout_height="43dp"
             android:layout_marginTop="16dp"
@@ -147,10 +148,10 @@
             android:contentDescription="@string/show_password"
             android:focusable="true"
             android:src="@drawable/ic_eye_closed"
-            app:layout_constraintBottom_toBottomOf="@id/contraseña_user"
+            app:layout_constraintBottom_toBottomOf="@id/contra_user"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/contraseña_user"
-            app:layout_constraintTop_toTopOf="@id/contraseña_user"
+            app:layout_constraintStart_toEndOf="@+id/contra_user"
+            app:layout_constraintTop_toTopOf="@id/contra_user"
             app:layout_constraintVertical_bias="0.5" />
 
         <TextView
@@ -162,10 +163,10 @@
             android:text="@string/contraseña_check"
             android:textSize="20sp"
 
-            app:layout_constraintStart_toStartOf="@+id/contraseña_user_check"
-            app:layout_constraintTop_toBottomOf="@+id/contraseña_user" />
+            app:layout_constraintStart_toStartOf="@+id/contra_user_check"
+            app:layout_constraintTop_toBottomOf="@+id/contra_user" />
         <EditText
-            android:id="@+id/contraseña_user_check"
+            android:id="@+id/contra_user_check"
             android:layout_width="300dp"
             android:layout_height="43dp"
             android:layout_marginTop="16dp"
@@ -190,10 +191,10 @@
             android:contentDescription="@string/show_password"
             android:focusable="true"
             android:src="@drawable/ic_eye_closed"
-            app:layout_constraintBottom_toBottomOf="@id/contraseña_user_check"
+            app:layout_constraintBottom_toBottomOf="@id/contra_user_check"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/contraseña_user_check"
-            app:layout_constraintTop_toTopOf="@id/contraseña_user_check"
+            app:layout_constraintStart_toEndOf="@+id/contra_user_check"
+            app:layout_constraintTop_toTopOf="@id/contra_user_check"
             app:layout_constraintVertical_bias="0.5" />
 
 
@@ -210,7 +211,7 @@
             android:textSize="17sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contraseña_user_check" />
+            app:layout_constraintTop_toBottomOf="@+id/contra_user_check" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
