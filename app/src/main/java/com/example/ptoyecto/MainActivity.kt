@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // TextView para registrar cuenta
+
         val registrarCuenta: TextView = findViewById(R.id.registrar)
         registrarCuenta.setOnClickListener {
             val intent = Intent(this, Registro::class.java)

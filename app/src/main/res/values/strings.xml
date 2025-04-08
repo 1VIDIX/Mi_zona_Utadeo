@@ -13,4 +13,7 @@
     <string name="show_password">Mostrar contraseña</string>
     <string name="bienvenido_u">Bienvenido</string>
     <string name="horario">Horario</string>
+    <string name="enviar_codigo">Enviar código de confirmación</string>
+    <string name="contra_recuperada">Su contraseña ha sido recuperada exitosamente</string>
+    <string name="back_">Regresar al inicio</string>
 </resources>

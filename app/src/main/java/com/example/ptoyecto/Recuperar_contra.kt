@@ -2,37 +2,37 @@ package com.example.ptoyecto
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 
 class Recuperar_contra : AppCompatActivity() {
+
+    private lateinit var emailEditText: EditText
+    private lateinit var sendCodeButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recuperar_contra)
 
 
-        val emailEditText = findViewById<EditText>(R.id.Email)
-        val sendCodeButton = findViewById<Button>(R.id.btnSendCode)
-
+        emailEditText = findViewById(R.id.Email)
+        sendCodeButton = findViewById(R.id.btnSendCode)
 
         sendCodeButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
 
-            if (email.isNotEmpty()) {
-                enviarCodigoConfirmacion(email)
-            } else {
-                Toast.makeText(this, "Ingrese un correo válido", Toast.LENGTH_SHORT).show()
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Por favor, ingrese su correo electrónico", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            Toast.makeText(this, "Se ha enviado un código de confirmación a: $email", Toast.LENGTH_LONG).show()
+
+            // Intent para iniciar la actividad Restablecida
+            val intent = Intent(this, Restablecida::class.java)
+            startActivity(intent)
         }
-    }
-
-    private fun enviarCodigoConfirmacion(email: String) {
-        // Simulación del envío de código (debes conectarlo con Firebase u otro servicio)
-        Toast.makeText(this, "Código enviado a $email", Toast.LENGTH_LONG).show()
-
-
     }
 }
