@@ -20,10 +20,6 @@ class Horario : AppCompatActivity() {
         val user = auth.currentUser
 
         if (user != null) {
-            val uid = user.uid
-            val db = FirebaseFirestore.getInstance()
-            val docRef = db.collection("usuarios").document(uid)
-
             welcomeTextView.text = "Horario"
         }
         val back : Button = findViewById(R.id.buttonMenu)
