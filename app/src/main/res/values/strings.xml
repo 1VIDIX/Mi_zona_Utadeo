@@ -12,4 +12,5 @@
     <string name="contraseña_check">Verifica tu contraseña</string>
     <string name="show_password">Mostrar contraseña</string>
     <string name="bienvenido_u">Bienvenido</string>
+    <string name="horario">Horario</string>
 </resources>

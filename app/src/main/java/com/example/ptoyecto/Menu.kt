@@ -1,6 +1,9 @@
 package com.example.ptoyecto
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -34,7 +37,11 @@ class Menu : AppCompatActivity() {
         } else {
             welcomeTextView.text = "Bienvenido"
         }
-
+        val horarioScreen: ImageView = findViewById(R.id.boton_horario)
+        horarioScreen.setOnClickListener {
+            val intent = Intent(this, Horario::class.java)
+            startActivity(intent)
+        }
 
 
 
