@@ -29,6 +29,13 @@ class Horario : AppCompatActivity() {
             finish()
         }
 
+        val botonAgregar: Button = findViewById(R.id.boton_agregar)
+        botonAgregar.setOnClickListener {
+            val dialog = FormularioHorarioDialog()
+            dialog.show(supportFragmentManager, "FormularioHorario")
+
+        }
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
