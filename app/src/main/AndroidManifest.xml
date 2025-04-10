@@ -11,24 +11,21 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Ptoyecto"
-
         tools:targetApi="31">
 
-        <activity
-            android:name=".RecuperadaActivity"
-            android:exported="false" />
 
         <activity android:name=".Horario" />
-        <activity android:name=".Registro" />
+
         <activity
-            android:name=".Recuperar_contra"
-            android:exported="true" />
+            android:name=".Registro" />
+
+        <activity
+            android:name=".Recuperar_contra"/>
+
         <activity
             android:name=".Iniciar_sesion"
-            android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".Recuperada" />
+            android:windowSoftInputMode="adjustPan"
+            android:exported="false"/>
 
         <activity
             android:name=".MainActivity"
@@ -38,8 +35,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".Menu" />
+        <activity android:name=".Menu"/>
 
         <meta-data
             android:name="preloaded_fonts"
