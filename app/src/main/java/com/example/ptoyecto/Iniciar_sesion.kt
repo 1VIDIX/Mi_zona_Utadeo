@@ -36,7 +36,11 @@ class Iniciar_sesion : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
+        val recuperar: TextView=findViewById(R.id.textView4)
+        recuperar.setOnClickListener{
+            val intent=Intent(this, Recuperar_contra::class.java)
+            startActivity(intent)
+        }
         var isPasswordVisible = false
         showPassword.setOnClickListener {
             isPasswordVisible = !isPasswordVisible

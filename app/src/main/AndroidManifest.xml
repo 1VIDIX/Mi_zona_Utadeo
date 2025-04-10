@@ -13,6 +13,7 @@
         android:theme="@style/Theme.Ptoyecto"
         tools:targetApi="31">
 
+
         <activity android:name=".Horario" />
 
         <activity
