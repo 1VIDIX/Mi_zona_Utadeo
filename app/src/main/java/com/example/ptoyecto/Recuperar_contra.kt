@@ -6,9 +6,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+
+
 
 class Recuperar_contra : AppCompatActivity() {
-
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recuperar_contra)
@@ -22,7 +25,11 @@ class Recuperar_contra : AppCompatActivity() {
             val email = emailEditText.text.toString().trim()
 
             if (email.isNotEmpty()) {
+                val intent = Intent(this, Recuperada::class.java)
+                startActivity(intent)
                 enviarCodigoConfirmacion(email)
+
+
             } else {
                 Toast.makeText(this, "Ingrese un correo válido", Toast.LENGTH_SHORT).show()
             }
@@ -30,9 +37,22 @@ class Recuperar_contra : AppCompatActivity() {
     }
 
     private fun enviarCodigoConfirmacion(email: String) {
-        // Simulación del envío de código (debes conectarlo con Firebase u otro servicio)
-        Toast.makeText(this, "Código enviado a $email", Toast.LENGTH_LONG).show()
+        val auth = FirebaseAuth.getInstance()
+        auth.firebaseAuthSettings.setAppVerificationDisabledForTesting(true)
 
 
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(
+                        this,
+                        "Correo de recuperación enviado a $email",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
     }
 }
