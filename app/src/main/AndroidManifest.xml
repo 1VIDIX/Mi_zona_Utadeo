@@ -21,6 +21,8 @@
 
         <activity
             android:name=".Recuperar_contra"/>
+        <activity
+            android:name=".Recuperada"/>
 
         <activity
             android:name=".Iniciar_sesion"
