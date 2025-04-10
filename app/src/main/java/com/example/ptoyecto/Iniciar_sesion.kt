@@ -76,6 +76,7 @@ class Iniciar_sesion : AppCompatActivity() {
                         finish()
                     } else {
                         Toast.makeText(this, "Error en el inicio de sesión", Toast.LENGTH_SHORT).show()
+                        progressBar.visibility = View.GONE
                     }
                 }
         }

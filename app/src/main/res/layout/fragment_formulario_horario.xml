@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00000000"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- FORMULARIO CENTRADO -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="#C5C4CE"
+            android:elevation="4dp"
+            android:maxWidth="600dp"
+            android:minWidth="280dp"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <EditText
+                android:id="@+id/inputCurso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Curso"
+                android:padding="12dp" />
+
+            <Spinner
+                android:id="@+id/spinnerDia"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/rounded_edittext" />
+
+            <EditText
+                android:id="@+id/inputAula"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Aula"
+                android:padding="12dp" />
+
+            <EditText
+                android:id="@+id/inputProfesor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Profesor (opcional)"
+                android:padding="12dp" />
+
+            <EditText
+                android:id="@+id/inputInicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Inicio"
+                android:padding="12dp" />
+
+            <EditText
+                android:id="@+id/inputFin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/rounded_edittext"
+                android:hint="Fin"
+                android:padding="12dp" />
+
+            <TextView
+                android:id="@+id/btnRecordatorio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center"
+                android:minWidth="180dp"
+                android:background="@drawable/button_gray"
+                android:text="+ Recordatorio"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="8dp"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/btnConfirmar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="4dp"
+                android:layout_gravity="center"
+                android:minWidth="234dp"
+                android:minHeight="40dp"
+                android:background="@drawable/rounded_button_blue"
+                android:text="Confirmar"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:padding="8dp"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/btnCancelar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_gravity="center"
+                android:minWidth="184dp"
+                android:minHeight="40dp"
+                android:text="Cancelar"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:padding="8dp"
+                android:textSize="13sp"
+                android:backgroundTint="@null"
+                android:background="@drawable/button_gray" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
