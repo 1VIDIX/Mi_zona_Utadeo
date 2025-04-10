@@ -8,13 +8,11 @@
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/color_fondo"
         tools:context=".Horario">
-
 
         <ImageView
             android:id="@+id/cuenta"
@@ -31,14 +29,11 @@
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
+
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
             android:background="@drawable/rounded_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cuenta"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/cuenta" />
 
         <Button
             android:id="@+id/buttonMenu"
@@ -52,9 +47,7 @@
             app:layout_constraintHorizontal_bias="0.043"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-
             app:layout_constraintVertical_bias="0.023" />
-
 
         <TextView
             android:id="@+id/textView3"
@@ -71,6 +64,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.48" />
+
+
+        <!-- Nuevo contenedor LinearLayout blanco para los horarios -->
+        <LinearLayout
+            android:id="@+id/linearLayoutHorarios"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="78dp"
+            android:background="@android:color/white"
+            android:backgroundTint="#00000000"
+            android:minHeight="650dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/boton_agregar"
