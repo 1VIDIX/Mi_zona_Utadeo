@@ -18,4 +18,5 @@
     <string name="back_">Regresar al inicio</string>
     <string name="contraseña_reset_done">Su contraseña ha sido recuperada exitosamente</string>
     <string name="bien_back">Bienvenido de nuevo</string>
+    <string name="map">Mapa</string>
 </resources>

@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.photoview)
     testImplementation(libs.junit)
     implementation(libs.firebase.auth.ktx)
     androidTestImplementation(libs.androidx.junit)
