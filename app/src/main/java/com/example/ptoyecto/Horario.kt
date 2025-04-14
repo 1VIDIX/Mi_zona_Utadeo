@@ -1,92 +1,133 @@
 package com.example.ptoyecto
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.api.Distribution.BucketOptions.Linear
+import android.content.SharedPreferences
 
 class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorarioListener {
-    private val ordenDias = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
 
+    private val ordenDias = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
     private lateinit var horarioLayout: LinearLayout
-    private val horarioCompleto = mutableMapOf<String, TextView>() // Esto debe estar FUERA de la funcion
+    private val horarioCompleto = mutableMapOf<String, TextView>()
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_horario)
 
+        horarioLayout = findViewById(R.id.linearLayoutHorarios)
+        sharedPrefs = getSharedPreferences("HorariosPrefs", Context.MODE_PRIVATE)
+
         val welcomeTextView: TextView = findViewById(R.id.textView3)
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) welcomeTextView.text = "Horario"
 
-        if (user != null) {
-            welcomeTextView.text = "Horario"
-        }
-
-        val back: Button = findViewById(R.id.buttonMenu)
-        back.setOnClickListener {
-            val intent = Intent(this, Menu::class.java)
-            startActivity(intent)
+        findViewById<Button>(R.id.buttonMenu).setOnClickListener {
+            startActivity(Intent(this, Menu::class.java))
             finish()
         }
 
-        val botonAgregar: Button = findViewById(R.id.boton_agregar)
-        botonAgregar.setOnClickListener {
+        findViewById<Button>(R.id.boton_agregar).setOnClickListener {
             val dialog = FormularioHorarioDialog()
-            dialog.listener = this // Asegúrate de configurar el listener
+            dialog.listener = this
             dialog.show(supportFragmentManager, "FormularioHorario")
         }
 
-        // Ajustes para la ventana
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        cargarHorariosDesdePrefs()
     }
 
-    override fun onFormularioHorarioConfirmado(curso: String, aula: String, dia: String, inicio: String, fin: String) {
+    override fun onFormularioHorarioConfirmado(
+        curso: String,
+        aula: String,
+        dia: String,
+        inicio: String,
+        fin: String
+    ) {
         val texto = "Curso: $curso\nAula: $aula\nInicio: $inicio\nFin: $fin\n\n"
 
-        if (horarioCompleto.containsKey(dia)) {
-            val editable = horarioCompleto[dia]
-            editable?.apply {
-                text = text.toString() + texto
-            }
-        } else {
-            val nuevoTextView = TextView(this)
-            val borrar = TextView(this)
-            nuevoTextView.text = "$dia\n$texto"
-            nuevoTextView.setTextColor(getColor(R.color.black))
-            nuevoTextView.textSize = 16f
+        val textoExistente = horarioCompleto[dia]?.text?.toString()
+        val textoActualizado = textoExistente + texto
 
-            nuevoTextView.setPadding(16, 16, 16, 16)
-            nuevoTextView.gravity = android.view.Gravity.CENTER_VERTICAL
+        val nuevoTextView = crearTextViewDia(dia, textoActualizado)
+        horarioCompleto[dia] = nuevoTextView
 
-            horarioCompleto[dia] = nuevoTextView
+        guardarHorariosEnPrefs()
+        actualizarLayout()
+    }
+
+
+    private fun crearTextViewDia(dia: String, contenido: String): TextView {
+        val textView = TextView(this)
+        textView.text = "$dia\n$contenido"
+        textView.setTextColor(getColor(R.color.black))
+        textView.textSize = 16f
+        textView.setPadding(16, 16, 16, 16)
+        textView.setBackgroundResource(R.drawable.rounded_background)
+
+        textView.setOnClickListener {
+            // Extraer valores del texto actual para editar
+            val lineas = contenido.trim().split("\n")
+            val curso = lineas[0].removePrefix("Curso: ")
+            val aula = lineas[1].removePrefix("Aula: ")
+            val inicio = lineas[2].removePrefix("Inicio: ")
+            val fin = lineas[3].removePrefix("Fin: ")
+
+            // Mostrar formulario con valores actuales
+            val dialog = FormularioHorarioDialog()
+            dialog.listener = this
+            dialog.setValoresIniciales(curso, aula, dia, inicio, fin)
+            dialog.show(supportFragmentManager, "FormularioHorario")
+
+            // Eliminar el contenido viejo para reemplazarlo
+            horarioCompleto.remove(dia)
+            guardarHorariosEnPrefs()
+            actualizarLayout()
+
         }
 
-        // Reordenar el layout
-        val horarioLayout = findViewById<LinearLayout>(R.id.linearLayoutHorarios)
-        horarioLayout.removeAllViews()
+        return textView
+    }
 
-        for (diaOrdenado in ordenDias) {
-            horarioCompleto[diaOrdenado]?.let {
+    private fun actualizarLayout() {
+        horarioLayout.removeAllViews()
+        for (dia in ordenDias) {
+            horarioCompleto[dia]?.let {
                 horarioLayout.addView(it)
             }
         }
     }
 
+    private fun guardarHorariosEnPrefs() {
+        val editor = sharedPrefs.edit()
+        for ((dia, textView) in horarioCompleto) {
+            editor.putString(dia, textView.text.toString())
+        }
+        editor.apply()
+    }
 
-
-
-
+    private fun cargarHorariosDesdePrefs() {
+        for (dia in ordenDias) {
+            val contenido = sharedPrefs.getString(dia, null)
+            if (contenido != null) {
+                val sinTitulo = contenido.removePrefix("$dia\n")
+                val textView = crearTextViewDia(dia, sinTitulo)
+                horarioCompleto[dia] = textView
+            }
+        }
+        actualizarLayout()
+    }
 }
+
+

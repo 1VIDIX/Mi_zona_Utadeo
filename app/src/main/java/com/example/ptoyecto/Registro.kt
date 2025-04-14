@@ -29,7 +29,13 @@ class Registro : AppCompatActivity() {
         val btnRegistrar: Button = findViewById(R.id.boton_init)
         val showPassword: ImageView = findViewById(R.id.show_password)
         val showPassword2: ImageView = findViewById(R.id.show_password2)
+        val back1: Button = findViewById(R.id.back1)
 
+        back1.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
         var isPasswordVisible = false
         showPassword.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
@@ -81,7 +87,14 @@ class Registro : AppCompatActivity() {
 
                         val userMap = hashMapOf(
                             "nombre" to nombre,
-                            "email" to email
+                            "email" to email,
+                            "cedula" to "",
+                            "departamento" to "No informada",
+                            "municipio" to "No informado",
+                            "sexo" to "No informado",
+                            "etnia" to "No informada",
+                            "emailUniversidad" to "",
+                            "telefono" to ""
                         )
 
                         if (uid != null) {

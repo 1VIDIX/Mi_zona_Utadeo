@@ -12,17 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ptoyecto"
         tools:targetApi="31">
-
-
-        <activity android:name=".Horario" />
-
         <activity
             android:name=".Registro" />
 
         <activity
             android:name=".Recuperar_contra"/>
-        <activity
-            android:name=".Recuperada"/>
 
         <activity
             android:name=".Iniciar_sesion"
@@ -34,12 +28,21 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
         <activity android:name=".Menu"/>
+
+        <activity
+            android:name=".Perfil"
+            android:exported="false" />
+
+        <activity
+            android:name=".Perfilmod"
+            android:exported="false" />
+
+        <activity android:name=".Eventos"/>
 
         <meta-data
             android:name="preloaded_fonts"
