@@ -55,11 +55,11 @@ class Menu : AppCompatActivity() {
         }
 
         findViewById<CardView>(R.id.mapa_button).setOnClickListener {
-            Toast.makeText(this, "Mapa - Próximamente", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, Mapa::class.java))
         }
 
         findViewById<CardView>(R.id.horarios_button).setOnClickListener {
-            Toast.makeText(this, "Horarios - Próximamente", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, Horario::class.java))
         }
 
         findViewById<ImageView>(R.id.cuenta).setOnClickListener {

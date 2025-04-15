@@ -50,6 +50,8 @@
         <activity
             android:name=".Mapa"/>
 
+        <activity
+            android:name=".Horario"/>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
