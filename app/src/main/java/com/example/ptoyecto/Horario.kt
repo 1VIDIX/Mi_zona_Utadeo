@@ -2,23 +2,25 @@ package com.example.ptoyecto
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorarioListener,
     FormularioEditarDialog.OnFormularioHorarioListener {
 
-    private val ordenDias = listOf("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo")
+    private val ordenDias = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
     private lateinit var horarioLayout: LinearLayout
     private val horarioCompleto = mutableMapOf<String, MutableList<TextView>>()
     private val titulosDias = mutableMapOf<String, TextView>()
     private val db = FirebaseFirestore.getInstance()
     private lateinit var userId: String
-    val Existe = mutableMapOf<String, Boolean>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +67,7 @@ class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorario
         idClaseExistente: String?,
         modo: String
     ) {
+
         val horario = hashMapOf(
             "curso" to curso,
             "aula" to aula,
@@ -73,6 +76,10 @@ class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorario
             "fin" to fin
         )
 
+        if (modo == "editar") {
+
+            return
+        }
         val idClase = idClaseExistente ?: db.collection("usuarios").document(userId)
             .collection("horarios").document(dia).collection("clases").document().id
 
@@ -84,10 +91,17 @@ class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorario
                 if (idClaseExistente != null) {
                     horarioCompleto[dia]?.removeAll { it.tag == idClase }
                 }
+                horarioCompleto.clear()
+                titulosDias.clear()
                 cargarHorariosDesdeFirestore()
-                crearYMostrarTextView(dia, idClase, horario, modo)
             }
     }
+    override fun onFormularioHorarioBorrado() {
+        horarioCompleto.clear()
+        titulosDias.clear()
+        cargarHorariosDesdeFirestore()
+    }
+
 
     private fun crearYMostrarTextView(dia: String, idClase: String, datos: Map<String, String>, modo: String = "crear") {
 
@@ -128,7 +142,13 @@ class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorario
                 setBackgroundResource(R.drawable.info_horario)
                 setTextColor(getColor(R.color.black))
                 textSize = 18f
-                setPadding(16, 16, 16, 8)
+                setPadding(32, 32, 32, 32)
+
+                val params = LinearLayout.LayoutParams(
+                    (resources.displayMetrics.widthPixels * 0.8).toInt(), // 80% del ancho de pantalla
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                params.setMargins(0,-10,0,0)
             }
             titulosDias[dia] = tituloDia
         }
@@ -137,9 +157,21 @@ class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorario
             text = contenido
             setTextColor(getColor(R.color.black))
             textSize = 16f
-            setPadding(16, 16, 16, 16)
+            setPadding(16, 32, 16, 16)
             setBackgroundResource(R.drawable.info_horario_contenido)
+
             tag = idClase
+
+            // CENTRAR Y HACER MAS FLACO
+            val params = LinearLayout.LayoutParams(
+                (resources.displayMetrics.widthPixels * 0.8).toInt(), // 80% del ancho de pantalla
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.gravity = Gravity.CENTER_HORIZONTAL
+            params.setMargins(0, 16, 0, 16)
+            layoutParams = params
+
+
 
             setOnClickListener {
                 val dialog = FormularioEditarDialog()
@@ -154,6 +186,7 @@ class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorario
                     idClase
                 )
                 dialog.show(supportFragmentManager, "FormularioEditarDialog")
+                actualizarLayout()
             }
         }
 
@@ -178,7 +211,7 @@ class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorario
     }
 
     private fun cargarHorariosDesdeFirestore() {
-        val dias = listOf("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo")
+        val dias = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
         for (dia in dias) {
             db.collection("usuarios").document(userId)
                 .collection("horarios")

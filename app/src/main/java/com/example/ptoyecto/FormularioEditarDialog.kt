@@ -42,6 +42,7 @@ class FormularioEditarDialog : DialogFragment() {
         val inputFin = view.findViewById<TextView>(R.id.inputFin)
 
         var idClase: String? = null
+        var diaOriginal: String? = null
 
         argumentosIniciales?.let { args ->
             inputCurso.setText(args.getString("curso", ""))
@@ -52,8 +53,8 @@ class FormularioEditarDialog : DialogFragment() {
             val dia = args.getString("dia", "")
             val index = diasSemana.indexOf(dia)
             if (index >= 0) spinnerDias.setSelection(index)
-
-            idClase = args.getString("idClase", null) // recibir id si lo hay
+            idClase = args.getString("idClase", null)
+            diaOriginal = dia
         }
 
         view.findViewById<TextView>(R.id.btnConfirmar).setOnClickListener {
@@ -68,31 +69,73 @@ class FormularioEditarDialog : DialogFragment() {
                 Toast.makeText(requireContext(), "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
             } else {
                 val user = auth.currentUser
-                if (user != null) {
-                    // Llamamos al listener para que lo maneje Horario.kt
-                    val modo = "editar"
-                    listener?.onFormularioHorarioConfirmado(
-                        curso, aula, profesor, diaSeleccionado, inicio, fin, idClase, modo
-                    )
-                    dismiss()
+                if (user != null && idClase != null && diaOriginal != null) {
+                    val db = FirebaseFirestore.getInstance()
+
+                    // 1. Eliminar la clase del dia original
+                    db.collection("usuarios")
+                        .document(user.uid)
+                        .collection("horarios")
+                        .document(diaOriginal!!)
+                        .collection("clases")
+                        .document(idClase!!)
+                        .delete()
+                        .addOnSuccessListener {
+                            // 2. Crear la clase en el nuevo dia
+                            val nuevaClase = hashMapOf(
+                                "curso" to curso,
+                                "aula" to aula,
+                                "profesor" to profesor,
+                                "inicio" to inicio,
+                                "fin" to fin
+                            )
+
+                            db.collection("usuarios")
+                                .document(user.uid)
+                                .collection("horarios")
+                                .document(diaSeleccionado)
+                                .collection("clases")
+                                .document(idClase!!) // mismo ID para mantenerlo consistente
+                                .set(nuevaClase)
+                                .addOnSuccessListener {
+                                    Toast.makeText(requireContext(), "Clase editada", Toast.LENGTH_SHORT).show()
+
+                                    listener?.onFormularioHorarioConfirmado(
+                                        curso, aula, profesor, diaSeleccionado, inicio, fin, idClase, "editar"
+                                    )
+                                    listener?.onFormularioHorarioBorrado()
+
+                                    dismiss()
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("GuardarClase", "Error al guardar la clase nueva", e)
+                                    Toast.makeText(requireContext(), "Error al guardar clase editada", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("EditarClase", "Error al eliminar para editar", e)
+                            Toast.makeText(requireContext(), "Error al actualizar clase", Toast.LENGTH_SHORT).show()
+                        }
                 } else {
                     Toast.makeText(requireContext(), "Usuario no autenticado", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-        val btnEliminar = view.findViewById<TextView>(R.id.btnEliminar)
-        btnEliminar.setOnClickListener {
 
-            val db = FirebaseFirestore.getInstance()
+        view.findViewById<TextView>(R.id.btnEliminar).setOnClickListener {
             val user = auth.currentUser
             if (user != null && idClase != null) {
+                val db = FirebaseFirestore.getInstance()
                 db.collection("usuarios")
                     .document(user.uid)
                     .collection("horarios")
+                    .document(spinnerDias.selectedItem.toString())
+                    .collection("clases")
                     .document(idClase!!)
                     .delete()
                     .addOnSuccessListener {
                         Toast.makeText(requireContext(), "Clase eliminada", Toast.LENGTH_SHORT).show()
+                        listener?.onFormularioHorarioBorrado()
                         dismiss()
                     }
                     .addOnFailureListener { e ->
@@ -116,7 +159,7 @@ class FormularioEditarDialog : DialogFragment() {
         inicio: String,
         fin: String,
         profesor: String,
-        idClase: String? // nuevo parametro para edicion
+        idClase: String?
     ) {
         argumentosIniciales = Bundle().apply {
             putString("curso", curso)
@@ -125,7 +168,7 @@ class FormularioEditarDialog : DialogFragment() {
             putString("inicio", inicio)
             putString("fin", fin)
             putString("profesor", profesor)
-            putString("idClase", idClase) // guardar id
+            putString("idClase", idClase)
         }
     }
 
@@ -145,9 +188,10 @@ class FormularioEditarDialog : DialogFragment() {
             dia: String,
             inicio: String,
             fin: String,
-            idClaseExistente: String?, // ahora con id opcional
+            idClaseExistente: String?,
             modo: String
         )
+
+        fun onFormularioHorarioBorrado()
     }
 }
-
