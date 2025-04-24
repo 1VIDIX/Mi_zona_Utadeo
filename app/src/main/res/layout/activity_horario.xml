@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/color_fondo"
     tools:context=".Horario">
+
     <ImageView
         android:id="@+id/cuenta"
         android:layout_width="49dp"
@@ -24,6 +25,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/baloo"
         android:text="@string/horario"
@@ -38,6 +40,8 @@
         android:id="@+id/buttonMenu"
         android:layout_width="43dp"
         android:layout_height="49dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
         android:backgroundTint="@color/fondo_claro"
         android:drawableTop="@drawable/ic_arrow"
         android:padding="9dp"
@@ -47,9 +51,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
-
+    <LinearLayout
+        android:id="@+id/fondo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="90dp"
+        android:background="@drawable/rounded_background"
+        android:backgroundTint="@color/fondo_claro"
+        android:minHeight="650dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="660dp"
         android:layout_marginTop="36dp"
@@ -63,12 +82,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
             <LinearLayout
                 android:id="@+id/linearLayoutHorarios"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rounded_background"
-                android:backgroundTint="@color/fondo_claro"
+                android:backgroundTint="#00000000"
                 android:minHeight="650dp"
                 android:orientation="vertical"
                 android:padding="16dp"
@@ -76,22 +96,25 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/boton_agregar"
-                android:layout_width="80dp"
-                android:layout_height="71dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="32dp"
-                android:backgroundTint="@color/fondo_oscuro"
-                android:text="+"
-                android:textColor="#646262"
-                android:textSize="34sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+
+
+    <Button
+        android:id="@+id/boton_agregar"
+        android:layout_width="80dp"
+        android:layout_height="71dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/fondo_oscuro"
+        android:text="+"
+        android:textColor="#646262"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

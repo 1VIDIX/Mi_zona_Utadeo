@@ -1,41 +1,22 @@
-
 package com.example.ptoyecto
 
 import android.app.Dialog
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.widget.*
-import androidx.core.graphics.drawable.toDrawable
+import com.google.firebase.auth.FirebaseAuth
 
 class FormularioHorarioDialog : DialogFragment() {
 
-    private var recordatorioActivo = false
-    var listener: OnFormularioHorarioListener? = null
-
-    // Bundle para valores iniciales
+    private val auth = FirebaseAuth.getInstance()
     private var argumentosIniciales: Bundle? = null
-
-    interface OnFormularioHorarioListener {
-        fun onFormularioHorarioConfirmado(curso: String, aula: String, dia: String, inicio: String, fin: String)
-    }
-
-    fun setValoresIniciales(curso: String, aula: String, dia: String, inicio: String, fin: String) {
-        argumentosIniciales = Bundle().apply {
-            putString("curso", curso)
-            putString("aula", aula)
-            putString("dia", dia)
-            putString("inicio", inicio)
-            putString("fin", fin)
-        }
-    }
+    var listener: OnFormularioHorarioListener? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
+        dialog.window?.setBackgroundDrawable(ColorDrawable(0x00000000))
         return dialog
     }
 
@@ -46,62 +27,80 @@ class FormularioHorarioDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        try {
-            val spinnerDias = view.findViewById<Spinner>(R.id.spinnerDia)
-            val diasSemana = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, diasSemana)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnerDias.adapter = adapter
+        val spinnerDias = view.findViewById<Spinner>(R.id.spinnerDia)
+        val diasSemana = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
+        spinnerDias.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, diasSemana).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
 
-            val inputCurso = view.findViewById<EditText>(R.id.inputCurso)
-            val inputAula = view.findViewById<EditText>(R.id.inputAula)
-            val inputInicio = view.findViewById<TextView>(R.id.inputInicio)
-            val inputFin = view.findViewById<TextView>(R.id.inputFin)
-            val inputProfesor = view.findViewById<EditText>(R.id.inputProfesor) // por si lo necesitas despues
+        val inputCurso = view.findViewById<EditText>(R.id.inputCurso)
+        val inputAula = view.findViewById<EditText>(R.id.inputAula)
+        val inputProfesor = view.findViewById<EditText>(R.id.inputProfesor)
+        val inputInicio = view.findViewById<TextView>(R.id.inputInicio)
+        val inputFin = view.findViewById<TextView>(R.id.inputFin)
 
-            // PRELLENAR CAMPOS SI HAY VALORES
-            argumentosIniciales?.let { args ->
-                inputCurso.setText(args.getString("curso", ""))
-                inputAula.setText(args.getString("aula", ""))
-                inputInicio.setText(args.getString("inicio", ""))
-                inputFin.setText(args.getString("fin", ""))
-                val dia = args.getString("dia", "")
-                val index = diasSemana.indexOf(dia)
-                if (index >= 0) spinnerDias.setSelection(index)
-            }
+        var idClase: String? = null
 
-            // Confirmar
-            view.findViewById<TextView>(R.id.btnConfirmar).setOnClickListener {
-                val curso = inputCurso.text.toString().trim()
-                val aula = inputAula.text.toString().trim()
-                val diaSeleccionado = spinnerDias.selectedItem.toString().trim()
-                val inicio = inputInicio.text.toString().trim()
-                val fin = inputFin.text.toString().trim()
+        argumentosIniciales?.let { args ->
+            inputCurso.setText(args.getString("curso", ""))
+            inputAula.setText(args.getString("aula", ""))
+            inputProfesor.setText(args.getString("profesor", ""))
+            inputInicio.setText(args.getString("inicio", ""))
+            inputFin.setText(args.getString("fin", ""))
+            val dia = args.getString("dia", "")
+            val index = diasSemana.indexOf(dia)
+            if (index >= 0) spinnerDias.setSelection(index)
 
-                if (curso.isEmpty() || aula.isEmpty() || diaSeleccionado.isEmpty() || inicio.isEmpty() || fin.isEmpty()) {
-                    Toast.makeText(requireContext(), "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
-                } else {
-                    listener?.onFormularioHorarioConfirmado(curso, aula, diaSeleccionado, inicio, fin)
-                    Toast.makeText(requireContext(), "Completado", Toast.LENGTH_SHORT).show()
+            idClase = args.getString("idClase", null) // recibir id si lo hay
+        }
+
+        view.findViewById<TextView>(R.id.btnConfirmar).setOnClickListener {
+            val curso = inputCurso.text.toString().trim()
+            val aula = inputAula.text.toString().trim()
+            val profesor = inputProfesor.text.toString().trim()
+            val diaSeleccionado = spinnerDias.selectedItem.toString().trim()
+            val inicio = inputInicio.text.toString().trim()
+            val fin = inputFin.text.toString().trim()
+
+            if (curso.isEmpty() || aula.isEmpty() || diaSeleccionado.isEmpty() || inicio.isEmpty() || fin.isEmpty()) {
+                Toast.makeText(requireContext(), "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
+            } else {
+                val user = auth.currentUser
+                if (user != null) {
+                    // Llamamos al listener para que lo maneje Horario.kt
+                    val modo = "agregar"
+                    listener?.onFormularioHorarioConfirmado(
+                        curso, aula, profesor, diaSeleccionado, inicio, fin, idClase, modo
+                    )
                     dismiss()
+                } else {
+                    Toast.makeText(requireContext(), "Usuario no autenticado", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
 
-            // Cancelar
-            view.findViewById<TextView>(R.id.btnCancelar).setOnClickListener {
-                dismiss()
-            }
+        view.findViewById<TextView>(R.id.btnCancelar).setOnClickListener {
+            dismiss()
+        }
+    }
 
-            // Recordatorio
-            val btnRecordatorio = view.findViewById<TextView>(R.id.btnRecordatorio)
-            actualizarColorBoton(btnRecordatorio)
-            btnRecordatorio.setOnClickListener {
-                recordatorioActivo = !recordatorioActivo
-                actualizarColorBoton(btnRecordatorio)
-            }
-
-        } catch (e: Exception) {
-            Log.e("FormularioDialog", "Error al crear formulario: ${e.message}")
+    fun setValoresIniciales(
+        curso: String,
+        aula: String,
+        dia: String,
+        inicio: String,
+        fin: String,
+        profesor: String,
+        idClase: String? // nuevo parametro para edicion
+    ) {
+        argumentosIniciales = Bundle().apply {
+            putString("curso", curso)
+            putString("aula", aula)
+            putString("dia", dia)
+            putString("inicio", inicio)
+            putString("fin", fin)
+            putString("profesor", profesor)
+            putString("idClase", idClase) // guardar id
         }
     }
 
@@ -113,14 +112,16 @@ class FormularioHorarioDialog : DialogFragment() {
         )
     }
 
-    private fun actualizarColorBoton(boton: TextView) {
-        val contexto = boton.context
-        if (recordatorioActivo) {
-            boton.setBackgroundResource(R.drawable.rounded_button_blue)
-            boton.setTextColor(contexto.getColor(R.color.white))
-        } else {
-            boton.setBackgroundResource(R.drawable.button_gray)
-            boton.setTextColor(contexto.getColor(R.color.black))
-        }
+    interface OnFormularioHorarioListener {
+        fun onFormularioHorarioConfirmado(
+            curso: String,
+            aula: String,
+            profesor: String,
+            dia: String,
+            inicio: String,
+            fin: String,
+            idClaseExistente: String?, // ahora con id opcional
+            modo: String
+        )
     }
 }

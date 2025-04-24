@@ -1,42 +1,42 @@
 package com.example.ptoyecto
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
-import android.content.SharedPreferences
+import com.google.firebase.firestore.FirebaseFirestore
 
-class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorarioListener {
+class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorarioListener,
+    FormularioEditarDialog.OnFormularioHorarioListener {
 
-    private val ordenDias = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
+    private val ordenDias = listOf("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo")
     private lateinit var horarioLayout: LinearLayout
-    private val horarioCompleto = mutableMapOf<String, TextView>()
-    private lateinit var sharedPrefs: SharedPreferences
+    private val horarioCompleto = mutableMapOf<String, MutableList<TextView>>()
+    private val titulosDias = mutableMapOf<String, TextView>()
+    private val db = FirebaseFirestore.getInstance()
+    private lateinit var userId: String
+    val Existe = mutableMapOf<String, Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_horario)
 
         horarioLayout = findViewById(R.id.linearLayoutHorarios)
-        sharedPrefs = getSharedPreferences("HorariosPrefs", Context.MODE_PRIVATE)
 
         val welcomeTextView: TextView = findViewById(R.id.textView3)
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) welcomeTextView.text = "Horario"
+        welcomeTextView.text = "Horario"
 
         findViewById<Button>(R.id.buttonMenu).setOnClickListener {
-            startActivity(Intent(this, Menu::class.java))
             finish()
         }
 
         findViewById<Button>(R.id.boton_agregar).setOnClickListener {
-            val dialog = FormularioHorarioDialog()
-            dialog.listener = this
-            dialog.show(supportFragmentManager, "FormularioHorario")
+            val formulario = FormularioHorarioDialog()
+            formulario.listener = this
+            formulario.show(supportFragmentManager, "FormularioHorario")
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -45,89 +45,155 @@ class Horario : AppCompatActivity(), FormularioHorarioDialog.OnFormularioHorario
             insets
         }
 
-        cargarHorariosDesdePrefs()
+        userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        if (userId.isEmpty()) {
+            Log.d("DEBUGGG", "Usuario no autenticado")
+            return
+        }
+
+        Log.d("DEBUGGG", "Usuario autenticado con ID: $userId")
+        cargarHorariosDesdeFirestore()
     }
 
     override fun onFormularioHorarioConfirmado(
         curso: String,
         aula: String,
+        profesor: String,
         dia: String,
         inicio: String,
-        fin: String
+        fin: String,
+        idClaseExistente: String?,
+        modo: String
     ) {
-        val texto = "Curso: $curso\nAula: $aula\nInicio: $inicio\nFin: $fin\n\n"
+        val horario = hashMapOf(
+            "curso" to curso,
+            "aula" to aula,
+            "profesor" to if (profesor.isNotBlank()) profesor else "vacio",
+            "inicio" to inicio,
+            "fin" to fin
+        )
 
-        val textoExistente = horarioCompleto[dia]?.text?.toString()
-        val textoActualizado = textoExistente + texto
+        val idClase = idClaseExistente ?: db.collection("usuarios").document(userId)
+            .collection("horarios").document(dia).collection("clases").document().id
 
-        val nuevoTextView = crearTextViewDia(dia, textoActualizado)
-        horarioCompleto[dia] = nuevoTextView
-
-        guardarHorariosEnPrefs()
-        actualizarLayout()
+        db.collection("usuarios").document(userId)
+            .collection("horarios").document(dia)
+            .collection("clases").document(idClase)
+            .set(horario)
+            .addOnSuccessListener {
+                if (idClaseExistente != null) {
+                    horarioCompleto[dia]?.removeAll { it.tag == idClase }
+                }
+                cargarHorariosDesdeFirestore()
+                crearYMostrarTextView(dia, idClase, horario, modo)
+            }
     }
 
+    private fun crearYMostrarTextView(dia: String, idClase: String, datos: Map<String, String>, modo: String = "crear") {
 
-    private fun crearTextViewDia(dia: String, contenido: String): TextView {
-        val textView = TextView(this)
-        textView.text = "$dia\n$contenido"
-        textView.setTextColor(getColor(R.color.black))
-        textView.textSize = 16f
-        textView.setPadding(16, 16, 16, 16)
-        textView.setBackgroundResource(R.drawable.rounded_background)
+        val contenido = """
+            Curso: ${datos["curso"]} 
+            Aula: ${datos["aula"]} 
+            Profesor: ${datos["profesor"]} 
+            Inicio: ${datos["inicio"]} 
+            Fin: ${datos["fin"]}
+        """.trimIndent()
 
-        textView.setOnClickListener {
-            // Extraer valores del texto actual para editar
-            val lineas = contenido.trim().split("\n")
-            val curso = lineas[0].removePrefix("Curso: ")
-            val aula = lineas[1].removePrefix("Aula: ")
-            val inicio = lineas[2].removePrefix("Inicio: ")
-            val fin = lineas[3].removePrefix("Fin: ")
-
-            // Mostrar formulario con valores actuales
-            val dialog = FormularioHorarioDialog()
-            dialog.listener = this
-            dialog.setValoresIniciales(curso, aula, dia, inicio, fin)
-            dialog.show(supportFragmentManager, "FormularioHorario")
-
-            // Eliminar el contenido viejo para reemplazarlo
-            horarioCompleto.remove(dia)
-            guardarHorariosEnPrefs()
-            actualizarLayout()
-
+        if (modo == "editar") {
+            val textViewExistente = horarioCompleto[dia]?.find { it.tag == idClase }
+            textViewExistente?.let { tv ->
+                tv.text = contenido
+                tv.setOnClickListener {
+                    val dialog = FormularioEditarDialog()
+                    dialog.listener = this@Horario
+                    dialog.setValoresIniciales(
+                        datos["curso"] ?: "",
+                        datos["aula"] ?: "",
+                        dia,
+                        datos["inicio"] ?: "",
+                        datos["fin"] ?: "",
+                        if (datos["profesor"] == "vacio") "" else datos["profesor"] ?: "",
+                        idClase
+                    )
+                    dialog.show(supportFragmentManager, "FormularioHorario")
+                }
+                actualizarLayout()
+            }
+            return
         }
 
-        return textView
+        if (!titulosDias.containsKey(dia)) {
+            val tituloDia = TextView(this).apply {
+                text = dia
+                setBackgroundResource(R.drawable.info_horario)
+                setTextColor(getColor(R.color.black))
+                textSize = 18f
+                setPadding(16, 16, 16, 8)
+            }
+            titulosDias[dia] = tituloDia
+        }
+
+        val claseTextView = TextView(this).apply {
+            text = contenido
+            setTextColor(getColor(R.color.black))
+            textSize = 16f
+            setPadding(16, 16, 16, 16)
+            setBackgroundResource(R.drawable.info_horario_contenido)
+            tag = idClase
+
+            setOnClickListener {
+                val dialog = FormularioEditarDialog()
+                dialog.listener = this@Horario
+                dialog.setValoresIniciales(
+                    datos["curso"] ?: "",
+                    datos["aula"] ?: "",
+                    dia,
+                    datos["inicio"] ?: "",
+                    datos["fin"] ?: "",
+                    if (datos["profesor"] == "vacio") "" else datos["profesor"] ?: "",
+                    idClase
+                )
+                dialog.show(supportFragmentManager, "FormularioEditarDialog")
+            }
+        }
+
+        if (horarioCompleto[dia] == null) {
+            horarioCompleto[dia] = mutableListOf()
+        }
+        horarioCompleto[dia]?.add(claseTextView)
+        actualizarLayout()
     }
 
     private fun actualizarLayout() {
         horarioLayout.removeAllViews()
         for (dia in ordenDias) {
-            horarioCompleto[dia]?.let {
-                horarioLayout.addView(it)
+            val clases = horarioCompleto[dia]
+            if (!clases.isNullOrEmpty()) {
+                titulosDias[dia]?.let { horarioLayout.addView(it) }
+                clases.forEach { claseTextView ->
+                    horarioLayout.addView(claseTextView)
+                }
             }
         }
     }
 
-    private fun guardarHorariosEnPrefs() {
-        val editor = sharedPrefs.edit()
-        for ((dia, textView) in horarioCompleto) {
-            editor.putString(dia, textView.text.toString())
+    private fun cargarHorariosDesdeFirestore() {
+        val dias = listOf("Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo")
+        for (dia in dias) {
+            db.collection("usuarios").document(userId)
+                .collection("horarios")
+                .document(dia)
+                .collection("clases")
+                .get()
+                .addOnSuccessListener { clases ->
+                    for (clase in clases) {
+                        val datos = clase.data.mapValues { it.value.toString() }
+                        crearYMostrarTextView(dia, clase.id, datos)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.d("DEBUGGG", "Error al obtener clases para el día $dia: ${e.message}")
+                }
         }
-        editor.apply()
-    }
-
-    private fun cargarHorariosDesdePrefs() {
-        for (dia in ordenDias) {
-            val contenido = sharedPrefs.getString(dia, null)
-            if (contenido != null) {
-                val sinTitulo = contenido.removePrefix("$dia\n")
-                val textView = crearTextViewDia(dia, sinTitulo)
-                horarioCompleto[dia] = textView
-            }
-        }
-        actualizarLayout()
     }
 }
-
-
