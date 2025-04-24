@@ -16,17 +16,6 @@
         <activity android:name=".Horario"/>
 
         <activity
-            android:name=".Registro" />
-
-        <activity
-            android:name=".Recuperar_contra"/>
-
-        <activity
-            android:name=".Iniciar_sesion"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false"/>
-
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -34,8 +23,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Registro" />
 
-        <activity android:name=".Menu"/>
+        <activity
+            android:name=".Recuperar_contra"/>
+        <activity
+            android:name=".Recuperada"/>
+
+        <activity
+            android:name=".Iniciar_sesion"
+            android:windowSoftInputMode="adjustPan"
+            android:exported="false"/>
+
+        <activity
+            android:name=".Menu"/>
 
         <activity
             android:name=".Perfil"
@@ -45,8 +47,14 @@
             android:name=".Perfilmod"
             android:exported="false" />
 
-        <activity android:name=".Eventos"/>
+        <activity
+            android:name=".Eventos"/>
 
+        <activity
+            android:name=".Mapa"/>
+
+        <activity
+            android:name=".Horario"/>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

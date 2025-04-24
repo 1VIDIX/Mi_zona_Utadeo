@@ -2,31 +2,27 @@ package com.example.ptoyecto
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class Menu : AppCompatActivity() {
+
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
-        val welcomeTextView: TextView = findViewById(R.id.textView3)
-        val auth = FirebaseAuth.getInstance()
+
+        auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
-        val cuenta: ImageView = findViewById(R.id.cuenta)
+        val welcomeTextView: TextView = findViewById(R.id.textView3)
 
-
-        cuenta.setOnClickListener {
-            val intent = Intent(this, Perfil::class.java)
-            startActivity(intent)
-            finish()
-        }
         if (user != null) {
             val uid = user.uid
             val db = FirebaseFirestore.getInstance()
@@ -46,34 +42,55 @@ class Menu : AppCompatActivity() {
             welcomeTextView.text = "Bienvenido"
         }
 
-        val eventosButton = findViewById<CardView>(R.id.eventos_button)
-        eventosButton.setOnClickListener {
-            val intent = Intent(this, Eventos::class.java)
-            startActivity(intent)
+        setupMenuButtons()
+    }
+
+    private fun setupMenuButtons() {
+        findViewById<CardView>(R.id.eventos_button).setOnClickListener {
+            startActivity(Intent(this, Eventos::class.java))
         }
 
-        val serviciosButton = findViewById<CardView>(R.id.servicios_button)
-        serviciosButton.setOnClickListener {
-
-            android.widget.Toast.makeText(this, "Servicios - Próximamente", android.widget.Toast.LENGTH_SHORT).show()
+        findViewById<CardView>(R.id.servicios_button).setOnClickListener {
+            Toast.makeText(this, "Servicios - Próximamente", Toast.LENGTH_SHORT).show()
         }
 
-        val mapaButton = findViewById<CardView>(R.id.mapa_button)
-        mapaButton.setOnClickListener {
-            android.widget.Toast.makeText(this, "Mapa - Próximamente", android.widget.Toast.LENGTH_SHORT).show()
+        findViewById<CardView>(R.id.mapa_button).setOnClickListener {
+            startActivity(Intent(this, Mapa::class.java))
         }
 
-        val horarioButton = findViewById<CardView>(R.id.horarios_button)
-        horarioButton.setOnClickListener {
-            val intent = Intent(this, Horario::class.java)
-            startActivity(intent)
+        findViewById<CardView>(R.id.horarios_button).setOnClickListener {
+            startActivity(Intent(this, Horario::class.java))
         }
 
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        findViewById<ImageView>(R.id.cuenta).setOnClickListener {
+            startActivity(Intent(this, Perfil::class.java))
         }
+
+        findViewById<CardView>(R.id.logout_button).setOnClickListener {
+            showLogoutConfirmationDialog()
+        }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Cerrar Sesión")
+            .setMessage("¿Estás seguro que deseas cerrar sesión?")
+            .setPositiveButton("Sí") { _, _ -> logout() }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    private fun logout() {
+        auth.signOut()
+        Toast.makeText(this, "Sesión cerrada exitosamente", Toast.LENGTH_SHORT).show()
+        redirectToLogin()
+    }
+
+    private fun redirectToLogin() {
+        val intent = Intent(this, Iniciar_sesion::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
     }
 }
