@@ -60,23 +60,27 @@
                 android:hint="Profesor (opcional)"
                 android:padding="12dp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/inputInicio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/rounded_edittext"
                 android:hint="Inicio"
-                android:padding="12dp" />
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true" />
 
-            <EditText
+            <TextView
                 android:id="@+id/inputFin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/rounded_edittext"
                 android:hint="Fin"
-                android:padding="12dp" />
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true" />
 
             <TextView
                 android:id="@+id/btnConfirmar"

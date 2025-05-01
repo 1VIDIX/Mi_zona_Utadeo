@@ -5,4 +5,23 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="DialogTheme_Clock" parent="Theme.MaterialComponents.Light.Dialog">
+        <!-- Cambiar el fondo de la barra superior -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+
+        <!-- Aplicar el gradiente como fondo para la barra superior del diálogo -->
+        <item name="android:background">@drawable/rounded_clock</item>
+
+
+
+            <!-- Estilo para la barra superior del TimePicker -->
+            <item name="android:colorPrimary">#052967</item> <!-- Azul oscuro -->
+
+            <!-- Estilo de los botones (Aceptar y Cancelar) -->
+            <item name="android:textColorPrimary">#000000</item> <!-- Color negro para el texto -->
+            <item name="android:textColorSecondary">#000000</item> <!-- Color negro para el texto -->
+
+    </style>
+
 </resources>

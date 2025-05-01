@@ -1,6 +1,7 @@
 package com.example.ptoyecto
 
 import android.app.Dialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
@@ -40,6 +41,14 @@ class FormularioEditarDialog : DialogFragment() {
         val inputProfesor = view.findViewById<EditText>(R.id.inputProfesor)
         val inputInicio = view.findViewById<TextView>(R.id.inputInicio)
         val inputFin = view.findViewById<TextView>(R.id.inputFin)
+
+        inputInicio.setOnClickListener {
+            mostrarTimePickerInicio(inputInicio)
+        }
+
+        inputFin.setOnClickListener {
+            mostrarTimePickerFin(inputFin)
+        }
 
         var idClase: String? = null
         var diaOriginal: String? = null
@@ -150,6 +159,28 @@ class FormularioEditarDialog : DialogFragment() {
         view.findViewById<TextView>(R.id.btnCancelar).setOnClickListener {
             dismiss()
         }
+    }
+
+    private fun mostrarTimePickerInicio(campoHora: TextView) {
+        val horaActual = campoHora.text.toString().split(":")
+        val hora = horaActual.getOrNull(0)?.toIntOrNull() ?: 8
+        val minuto = horaActual.getOrNull(1)?.toIntOrNull() ?: 0
+
+        TimePickerDialog(requireContext(), { _, selectedHour, selectedMinute ->
+            val horaFormateada = String.format("%02d:%02d", selectedHour, selectedMinute)
+            campoHora.text = horaFormateada
+        }, hora, minuto, true).show()
+    }
+
+    private fun mostrarTimePickerFin(campoHora: TextView) {
+        val horaActual = campoHora.text.toString().split(":")
+        val hora = horaActual.getOrNull(0)?.toIntOrNull() ?: 10
+        val minuto = horaActual.getOrNull(1)?.toIntOrNull() ?: 0
+
+        TimePickerDialog(requireContext(), { _, selectedHour, selectedMinute ->
+            val horaFormateada = String.format("%02d:%02d", selectedHour, selectedMinute)
+            campoHora.text = horaFormateada
+        }, hora, minuto, true).show()
     }
 
     fun setValoresIniciales(

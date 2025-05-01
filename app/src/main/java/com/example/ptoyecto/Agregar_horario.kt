@@ -1,12 +1,14 @@
 package com.example.ptoyecto
 
 import android.app.Dialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import android.graphics.drawable.ColorDrawable
 import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
+import java.util.*
 
 class FormularioHorarioDialog : DialogFragment() {
 
@@ -45,13 +47,25 @@ class FormularioHorarioDialog : DialogFragment() {
             inputCurso.setText(args.getString("curso", ""))
             inputAula.setText(args.getString("aula", ""))
             inputProfesor.setText(args.getString("profesor", ""))
-            inputInicio.setText(args.getString("inicio", ""))
-            inputFin.setText(args.getString("fin", ""))
+            inputInicio.text = args.getString("inicio", "")
+            inputFin.text = args.getString("fin", "")
             val dia = args.getString("dia", "")
             val index = diasSemana.indexOf(dia)
             if (index >= 0) spinnerDias.setSelection(index)
 
-            idClase = args.getString("idClase", null) // recibir id si lo hay
+            idClase = args.getString("idClase", null)
+        }
+
+        inputInicio.setOnClickListener {
+            mostrarTimePicker { horaSeleccionada ->
+                inputInicio.text = horaSeleccionada
+            }
+        }
+
+        inputFin.setOnClickListener {
+            mostrarTimePicker { horaSeleccionada ->
+                inputFin.text = horaSeleccionada
+            }
         }
 
         view.findViewById<TextView>(R.id.btnConfirmar).setOnClickListener {
@@ -67,10 +81,8 @@ class FormularioHorarioDialog : DialogFragment() {
             } else {
                 val user = auth.currentUser
                 if (user != null) {
-                    // Llamamos al listener para que lo maneje Horario.kt
-                    val modo = "agregar"
                     listener?.onFormularioHorarioConfirmado(
-                        curso, aula, profesor, diaSeleccionado, inicio, fin, idClase, modo
+                        curso, aula, profesor, diaSeleccionado, inicio, fin, idClase, "agregar"
                     )
                     dismiss()
                 } else {
@@ -84,6 +96,24 @@ class FormularioHorarioDialog : DialogFragment() {
         }
     }
 
+    private fun mostrarTimePicker(onHoraSeleccionada: (String) -> Unit) {
+        val calendario = Calendar.getInstance()
+        val hora = calendario.get(Calendar.HOUR_OF_DAY)
+        val minuto = calendario.get(Calendar.MINUTE)
+
+        // Aplica el tema personalizado
+        val timePicker = object : TimePickerDialog(
+            requireContext(),
+            { _, horaSeleccionada, minutoSeleccionado ->
+                val horaFormateada = String.format("%02d:%02d", horaSeleccionada, minutoSeleccionado)
+                onHoraSeleccionada(horaFormateada)
+            },
+            hora, minuto, true // true = formato 24h
+        ) {}
+        timePicker.show()
+    }
+
+
     fun setValoresIniciales(
         curso: String,
         aula: String,
@@ -91,7 +121,7 @@ class FormularioHorarioDialog : DialogFragment() {
         inicio: String,
         fin: String,
         profesor: String,
-        idClase: String? // nuevo parametro para edicion
+        idClase: String?
     ) {
         argumentosIniciales = Bundle().apply {
             putString("curso", curso)
@@ -100,7 +130,7 @@ class FormularioHorarioDialog : DialogFragment() {
             putString("inicio", inicio)
             putString("fin", fin)
             putString("profesor", profesor)
-            putString("idClase", idClase) // guardar id
+            putString("idClase", idClase)
         }
     }
 
@@ -120,7 +150,7 @@ class FormularioHorarioDialog : DialogFragment() {
             dia: String,
             inicio: String,
             fin: String,
-            idClaseExistente: String?, // ahora con id opcional
+            idClaseExistente: String?,
             modo: String
         )
     }

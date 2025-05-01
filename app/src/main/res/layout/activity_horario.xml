@@ -86,11 +86,10 @@
             <LinearLayout
                 android:id="@+id/linearLayoutHorarios"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="-10dp"
                 android:background="@drawable/rounded_background"
                 android:backgroundTint="#00000000"
-                android:minHeight="650dp"
                 android:orientation="vertical"
                 android:paddingStart="16dp"
                 android:paddingTop="0dp"
