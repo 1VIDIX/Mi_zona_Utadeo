@@ -13,8 +13,6 @@
         android:theme="@style/Theme.Ptoyecto"
         tools:targetApi="31">
 
-        <activity android:name=".Horario"/>
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -49,6 +47,9 @@
 
         <activity
             android:name=".Eventos"/>
+
+        <activity
+            android:name=".EventoDetalle"/>
 
         <activity
             android:name=".Mapa"/>

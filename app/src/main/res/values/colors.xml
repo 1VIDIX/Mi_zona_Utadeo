@@ -6,4 +6,19 @@
     <color name="fondo_claro">#d9d9d9</color>
     <color name="fondo_oscuro">#babbb3</color>
     <color name="transparente">#00000000</color>
+
+
+    <color name="fondo_medio">#42A5F5</color>
+    <color name="colorPrimary">@color/fondo_oscuro</color>
+    <color name="colorPrimaryDark">#0D47A1</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="academic_bg">#E3F2FD</color>
+    <color name="academic_stroke">#2196F3</color>
+    <color name="cultural_bg">#F3E5F5</color>
+    <color name="cultural_stroke">#9C27B0</color>
+    <color name="sports_bg">#E8F5E9</color>
+    <color name="sports_stroke">#4CAF50</color>
+    <color name="conference_bg">#FFF3E0</color>
+    <color name="conference_stroke">#FF9800</color>
 </resources>
