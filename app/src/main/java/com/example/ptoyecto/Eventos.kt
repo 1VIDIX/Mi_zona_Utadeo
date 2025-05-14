@@ -62,9 +62,7 @@ class Eventos : AppCompatActivity() {
             finish()
         }
 
-        val calendarButton: ImageButton = findViewById(R.id.calendar_button)
-        calendarButton.setOnClickListener {
-        }
+
     }
 
     private fun setupTabLayout() {

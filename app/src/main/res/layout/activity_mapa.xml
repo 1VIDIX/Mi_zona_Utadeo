@@ -122,7 +122,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/edittext_rounded"
-                    android:backgroundTint="@color/fondo_claro"
                     android:text="Lugares importantes"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
@@ -139,29 +138,59 @@
                     android:textColor="@color/white"
                     android:textSize="12sp" />
             </LinearLayout>
-
             <FrameLayout
                 android:id="@+id/frameMapa"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/fondo_claro"
                 android:elevation="2dp">
 
-                <com.github.chrisbanes.photoview.PhotoView
-                    android:id="@+id/mapaCampus"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/piso_4" />
 
-                <com.example.ptoyecto.MapaOverlayView
-                    android:id="@+id/mapaOverlay"
+                <com.example.ptoyecto.MapaCanvasView
+                    android:id="@+id/mapaCanvas"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="400dp"
+                    android:background="@color/white"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <LinearLayout
+                    android:id="@+id/floorControlLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="12dp"
+                    android:background="@drawable/edittext_rounded"
+                    android:padding="8dp"
+                    android:elevation="4dp">
+
+                    <ImageButton
+                        android:id="@+id/bajar_piso"
+                        android:layout_width="40dp"
+                        android:layout_height="35dp"
+                        android:background="@null"
+                        android:src="@drawable/ic_arrow"/>
+
+                    <TextView
+                        android:id="@+id/indicaorPiso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Piso 4"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:layout_marginHorizontal="8dp"
+                        android:gravity="center_vertical" />
+
+                    <ImageButton
+                        android:id="@+id/subir_piso"
+                        android:layout_width="40dp"
+                        android:layout_height="35dp"
+                        android:background="@null"
+                        android:src="@drawable/ic_arrow2" />
+                </LinearLayout>
             </FrameLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -202,7 +231,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/btnGuardar"
@@ -239,7 +268,6 @@
                         app:layout_constraintBottom_toBottomOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
-
             <Button
                 android:id="@+id/btnShowPathInfo"
                 android:layout_width="match_parent"

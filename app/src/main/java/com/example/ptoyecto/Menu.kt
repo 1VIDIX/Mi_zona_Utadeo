@@ -51,7 +51,7 @@ class Menu : AppCompatActivity() {
         }
 
         findViewById<CardView>(R.id.servicios_button).setOnClickListener {
-            Toast.makeText(this, "Servicios - Próximamente", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, Soporte::class.java))
         }
 
         findViewById<CardView>(R.id.mapa_button).setOnClickListener {

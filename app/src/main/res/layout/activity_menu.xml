@@ -135,16 +135,16 @@
                         android:padding="16dp">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/calendario_icon" />
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@drawable/ic_soporte2" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:fontFamily="@font/baloo"
-                            android:text="Servicios"
+                            android:text="Soporte"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </LinearLayout>

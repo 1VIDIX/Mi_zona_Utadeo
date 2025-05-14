@@ -19,4 +19,21 @@
     <string name="contraseña_reset_done">Su contraseña ha sido recuperada exitosamente</string>
     <string name="bien_back">Bienvenido de nuevo</string>
     <string name="map">Mapa</string>
+    <string name="Servicios">Servicios</string>
+    <string name="Solucion_de_problemas">Solucion de problemas</string>
+    <string name="Contactanos_aqui">Contactanos</string>
+    <string name="Soporte">Soporte</string>
+    <string name="Mi_cuenta">Mi cuenta</string>
+    <string name="Informe_de_errores_y_asistencia_tecnica">Informe de errores</string>
+    <string name="Tienes_problemas_con_tu_cuenta">Tienes problemas con tu cuenta</string>
+    <string name="Restablecer_contrasena_aqui">Restablece contraseña</string>
+    <string name="Sugerencias">Sugerencias</string>
+    <string name="Tienes_alguna_sugerencia">Tienes sugerencias</string>
+    <string name="Envia_tus_comentarios_aqui">Envia tus comentarios aqui</string>
+    <string name="Restablece_tu_contrasena_aqui">Restablece tu contraseña aqui</string>
+    <string name="Historial">Historial</string>
+    <string name="Quieres_ver_tu_historial">Quieres ver tu historial</string>
+    <string name="Consulta_tu_historial_aqui">Consulta tu historial aqui</string>
+    <string name="Reporte_de_errores_y_asistencia_tecnica">Reporte de errores y asistencia tecnica</string>
+
 </resources>

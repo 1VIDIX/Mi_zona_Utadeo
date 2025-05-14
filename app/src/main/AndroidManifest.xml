@@ -56,6 +56,17 @@
 
         <activity
             android:name=".Horario"/>
+        <activity
+            android:name=".EventoDetalle" />
+        <activity
+            android:name=".Soporte"/>
+        <activity
+            android:name=".SolucionProblemas" />
+
+        <activity
+            android:name=".SugerenciasActivity" />
+        <activity
+            android:name=".HistorialActivity" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
